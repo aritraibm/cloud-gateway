@@ -1,6 +1,6 @@
 # Prudential POC Documentation
 
-Simple overview of use/purpose.
+
 
 ## Application Structure
 ![image](https://user-images.githubusercontent.com/103875790/173271480-0eb16dc6-4afc-4d5d-a436-07a0975c9c65.png)
@@ -46,56 +46,115 @@ Simple overview of use/purpose.
 * Branch: ```master```
 
 
-### Cloud API Gateway
+### Department Service
 
-* Description: This is a single entry & exit point to multiple microservices for an external application/client. Sometimes it is also called Edge Microservice. Since external clients are restricted to access the microservices directly, it acts as a mediator between external clients & the collection of microservices.
-* Port: ```9191```
-* Repository: [https://github.com/aritraibm/cloud-gateway.git](https://github.com/aritraibm/cloud-gateway.git)
+* Description: Department service is also a standalone microservice which is responsible to provide department details to Rest clients and user service.
+* Port: ```9091```
+* Repository: [https://github.com/aritraibm/department.service.git](https://github.com/aritraibm/department.service.git)
 * Branch: ```master```
-### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
 
-### Executing program
+## Distributed Logging Implementation
 
-* How to run the program
-* Step-by-step bullets
+### ELK Stack (with Sleuth)
+
+* Description: To implement distributed logging, we can use Logstash, Elastic Search, and Kibana. Sleuth will help us to generate and maintain a global trace or correlation id for all the required applications. Logstash will collect the logs from the application and provide them into elastic search and Kibana helps us to visualize (as it provides us an interactive UI to view) the logs.
+Here, we used ELK with the 7.6.2 version as it’s compatible with jdk8, however, we can use any of the updated versions with updated JDK. Sleuth dependency is available in user service pom.xml and below are the download link for all of the ELK applications.
+
+* ElasticSearch: https://www.elastic.co/downloads/elasticsearch
+
+* Logstash: https://www.elastic.co/downloads/logstash
+
+* Kibana: https://www.elastic.co/downloads/kibana
+
+
+### Zipkin & Rabbit (with Sleuth)
+
+* Description: Zipkin is also a very good way to maintain/ view the distributed logs. Here also, Sleuth will help us to generate and maintain a global trace or correlation id for all the required applications. It’s recommended to integrate Zipkin with rabbit (MQ) to avoid single failure scenarios.
+
+
+## Functionalities & Endpoints
+
+### Save Department Details
+
+* Description: This API will save new department details.
+* URL: ```http://localhost:9191/pru-dept/save-dept```
+* HTTP method: ```POST```
+* Body: 
 ```
-code blocks for commands
+{
+    "deptName": "IT",
+    "deptAddress": "India",
+    "deptCode": "D-001"
+}
 ```
 
-## Help
 
-Any advise for common problems or issues.
+### Get Department Details by Department Id
+
+* Description: This API will get existing department details by department Id.
+* URL: ```http://localhost:9191/pru-dept/get-dept/4```
+* HTTP method: ```GET```
+* Body: 
 ```
-command to run if program contains helper info
+NA
 ```
 
-## Authors
 
-Contributors names and contact info
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+### Save User Details
+
+* Description: This API will save new user details.
+* URL: ```http://localhost:9191/pru-user/save-user```
+* HTTP method: ```POST```
+* Body: 
+```
+{
+    "firstName": "Alex",
+    "lastName": "Nichols",
+    "email": "alex@test.com",
+    "deptId": 4
+}
+```
+
+
+
+### Get User Details by User Id (JPA method)
+
+* Description: This API will get existing user details by user Id.
+* URL: ```http://localhost:9191/pru-user/get-user/5```
+* HTTP method: ```GET```
+* Body: 
+```
+NA
+```
+
+
+
+### Get User Details by User Id (Named Native - SQL)
+
+* Description: This API will get existing user details by user Id.
+* URL: ```http://localhost:9191/pru-user/get-user-by-named-native/5```
+* HTTP method: ```GET```
+* Body: 
+```
+NA
+```
+
+
+
+### Get User Details by User Id (Named - JPQL)
+
+* Description: This API will get existing user details by user Id.
+* URL: ```http://localhost:9191/pru-user/get-user-by-named/5```
+* HTTP method: ```GET```
+* Body: 
+```
+NA
+```
+
 
 ## Version History
 
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
+* v1.0.0
     * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
